@@ -1,0 +1,31 @@
+# serverless.yml
+
+service: serverless-react
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+  region: eu-west-1
+  deploymentBucket: serverless-react-${self:provider.region}-deploys
+  stage: dev
+  environment:
+    STAGE: ${opt:stage, self:provider.stage}
+
+plugins:
+  - serverless-webpack
+
+functions:
+  server:
+    handler: handler.handler
+    memorySize: 128
+    timeout: 5
+    events:
+      - http:
+          path: /
+          method: any
+          cors: true
+      - http:
+          path: /{proxy+}
+          method: any
+          cors: true
+
